@@ -13,11 +13,13 @@ Global Styles
 /*  global classes */
 
 /* section */
+
 .section,
 .container {
   width: 90vw;
   margin: 0 auto;
   max-width: 1170px;
+  background: hsl(210, 36%, 96%);
 }
 
 @media screen and (min-width: 992px) {
@@ -31,7 +33,7 @@ Global Styles
   margin-top: 5rem;
   background: hsl(210, 36%, 96%);
 }
-.btn {
+.button {
   display: inline-block;
   background: var(--clr-primary-5);
   color: var(--clr-white);

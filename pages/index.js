@@ -141,10 +141,11 @@ export default function Home() {
                 <h4 className={styles.itemh4}>{meeting.meetingName}</h4>
                 <h4 className={styles.itemh4}>{meeting.meetingDate}</h4>
                 {/* <button
-              onClick={() => dispatch({ type: "REMOVE_ITEM", payload: id })}
-            >
-              remove
-            </button> */}
+                  className={styles.formButton}
+                  onClick={() => dispatch({ type: "REMOVE_ITEM", payload: id })}
+                >
+                  remove
+                </button> */}
               </a>
             </Link>
           </div>
