@@ -1,8 +1,59 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import Link from "next/link";
+
+import React, { useState, useReducer } from "react";
+import Modal from "../components/Modal";
+// reducer function
+import { reducer } from "../utils/reducer";
+const defaultState = {
+  meetings: [],
+  isModalOpen: false,
+  modalContent: "",
+};
 
 export default function Home() {
+  const [meeting, setMeeting] = useState({
+    meetingName: "",
+    meetingDetails: "",
+    meetingDuration: "",
+    meetingStartTime: "",
+    meetingDate: "",
+  });
+  // const [name, setName] = useState("");
+  const [state, dispatch] = useReducer(reducer, defaultState);
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setMeeting({ ...meeting, [name]: value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (
+      meeting.meetingName &&
+      meeting.meetingDetails &&
+      meeting.meetingDuration &&
+      meeting.meetingStartTime &&
+      meeting.meetingDate
+    ) {
+      const newMeeting = { ...meeting, id: new Date().getTime().toString() };
+      dispatch({ type: "ADD_ITEM", payload: newMeeting });
+      setMeeting({
+        meetingName: "",
+        meetingDetails: "",
+        meetingDuration: "",
+        meetingStartTime: "",
+        meetingDate: "",
+      });
+    } else {
+      dispatch({ type: "NO_VALUE" });
+    }
+  };
+  const closeModal = () => {
+    dispatch({ type: "CLOSE_MODAL" });
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,61 +62,94 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+      {state.isModalOpen && (
+        <Modal closeModal={closeModal} modalContent={state.modalContent} />
+      )}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.formControl}>
+          <label htmlFor="meetingName">Name : </label>
+          <input
+            className={styles.formInput}
+            type="text"
+            id="meetingName"
+            name="meetingName"
+            value={meeting.meetingName}
+            onChange={handleChange}
+          />
         </div>
-      </main>
+        <div className={styles.formControl}>
+          <label htmlFor="meetingDetails">Details : </label>
+          <input
+            className={styles.formInput}
+            type="text"
+            id="meetingDetails"
+            name="meetingDetails"
+            value={meeting.meetingDetails}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.formControl}>
+          <label htmlFor="meetingDuration">Duration : </label>
+          <input
+            className={styles.formInput}
+            type="number"
+            id="meetingDuration"
+            name="meetingDuration"
+            value={meeting.meetingDuration}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.formControl}>
+          <label htmlFor="meetingStartTime">Start Time : </label>
+          <input
+            className={styles.formInput}
+            type="time"
+            id="meetingStartTime"
+            name="meetingStartTime"
+            value={meeting.meetingStartTime}
+            onChange={handleChange}
+          />
+        </div>
+        <div className={styles.formControl}>
+          <label htmlFor="meetingDate">Date : </label>
+          <input
+            className={styles.formInput}
+            type="date"
+            id="meetingDate"
+            name="meetingDate"
+            value={meeting.meetingDate}
+            onChange={handleChange}
+          />
+        </div>
+        <button type="submit" className={styles.formButton}>
+          Schedule Meeting
+        </button>
+      </form>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      {state.meetings.map((meeting) => {
+        return (
+          <div key={meeting.id} className={styles.item}>
+            {/* href=
+            {`episodes/${episode.itunes.episode}/${kebabCase(episode.title)}/${
+              episode.anotherProp
+            }`} */}
+            <Link
+              href={`/details/${meeting.id}/${meeting.meetingName}/${meeting.meetingDetails}/${meeting.meetingDuration}/${meeting.meetingStartTime}/${meeting.meetingDate}`}
+              legacyBehavior
+            >
+              <a>
+                <h4 className={styles.itemh4}>{meeting.meetingName}</h4>
+                <h4 className={styles.itemh4}>{meeting.meetingDate}</h4>
+                {/* <button
+              onClick={() => dispatch({ type: "REMOVE_ITEM", payload: id })}
+            >
+              remove
+            </button> */}
+              </a>
+            </Link>
+          </div>
+        );
+      })}
     </div>
-  )
+  );
 }
