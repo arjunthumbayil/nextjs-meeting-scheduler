@@ -6,6 +6,7 @@ import React, { useState, useReducer } from "react";
 import Modal from "../components/Modal";
 // reducer function
 import { reducer } from "../utils/reducer";
+
 const defaultState = {
   meetings: [],
   isModalOpen: false,
@@ -20,7 +21,7 @@ export default function Home() {
     meetingStartTime: "",
     meetingDate: "",
   });
-  // const [name, setName] = useState("");
+
   const [state, dispatch] = useReducer(reducer, defaultState);
 
   const handleChange = (e) => {
@@ -28,6 +29,7 @@ export default function Home() {
     const value = e.target.value;
     setMeeting({ ...meeting, [name]: value });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
@@ -50,6 +52,7 @@ export default function Home() {
       dispatch({ type: "NO_VALUE" });
     }
   };
+
   const closeModal = () => {
     dispatch({ type: "CLOSE_MODAL" });
   };
@@ -132,22 +135,26 @@ export default function Home() {
       {state.meetings.map((meeting) => {
         return (
           <div key={meeting.id} className={styles.item}>
-            <Link
+            {/* <Link
               href={`/details/${meeting.id}/${meeting.meetingName}/${meeting.meetingDetails}/${meeting.meetingDuration}/${meeting.meetingStartTime}/${meeting.meetingDate}`}
               legacyBehavior
             >
-              <a className={styles.itema}>
-                <h4 className={styles.itemh4}>{meeting.meetingName}</h4>
-                <h4 className={styles.itemh4}>{meeting.meetingStartTime}</h4>
-                <h4 className={styles.itemh4}>{meeting.meetingDate}</h4>
-                {/* <button
-                  className={styles.formButton}
-                  onClick={() => dispatch({ type: "REMOVE_ITEM", payload: id })}
-                >
-                  remove
-                </button> */}
-              </a>
-            </Link>
+              
+            </Link> */}
+
+            <div className={styles.itema}>
+              <h4 className={styles.itemh4}>{meeting.meetingName}</h4>
+              <h4 className={styles.itemh4}>{meeting.meetingStartTime}</h4>
+              <h4 className={styles.itemh4}>{meeting.meetingDate}</h4>
+              <button
+                className={styles.button}
+                onClick={() =>
+                  dispatch({ type: "REMOVE_ITEM", payload: meeting.id })
+                }
+              >
+                remove
+              </button>
+            </div>
           </div>
         );
       })}
